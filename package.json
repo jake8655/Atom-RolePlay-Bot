@@ -1,0 +1,25 @@
+{
+  "name": "atom-roleplay-bot",
+  "version": "1.0.0",
+  "description": "Atom RolePlay Bot",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node .",
+    "devStart": "nodemon ."
+  },
+  "keywords": [
+    "discord-bot",
+    "atomrp"
+  ],
+  "author": "Jake",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  },
+  "dependencies": {
+    "discord.js": "^13.3.1",
+    "dotenv": "^10.0.0",
+    "node-fetch": "^3.1.0"
+  }
+}
