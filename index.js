@@ -5,6 +5,8 @@ dotenv.config();
 
 import GetFivemInfo from "./functions/fivem.js";
 import StatusMessage from "./functions/status.js";
+import { addRole } from "./commands.js";
+import roleConfig from "./config/roles.js";
 
 const client = new Discord.Client({
   intents: [Discord.Intents.FLAGS.GUILDS, Discord.Intents.FLAGS.GUILD_MESSAGES],
@@ -63,5 +65,28 @@ async function setStatus() {
   );
   client.user.setStatus("online");
 }
+
+client.on("messageCreate", (msg) => {
+  if (!msg.content.startsWith("-rangadas") && !msg.content.startsWith("-frakijump")) return;
+  if (msg.channel.id !== roleConfig.addRoleChannel && msg.channel.id !== roleConfig.rmRoleChannel) return;
+
+  const author = client.guilds.cache
+    .get(process.env.GUILD_ID)
+    .members.cache.get(msg.author.id);
+
+  const hasRoles = author.roles.cache.some((role) => roleConfig.leaderRoles.includes(role.id));
+  const embed = new Discord.MessageEmbed()
+    .setColor("RED")
+    .setAuthor(
+      `${msg.author.username}#${msg.author.discriminator}`,
+      msg.author.avatarURL()
+    )
+    .setTimestamp()
+    .setFooter(msg.guild.name, msg.guild.iconURL())
+    .setDescription("**Erre nincs engedélyed! :x:**");
+  if (!hasRoles) return msg.reply({ embeds: [embed] });
+
+  if (msg.content.startsWith("-rangadas")) return addRole(msg);
+});
 
 client.login(process.env.TOKEN);
