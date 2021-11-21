@@ -9,6 +9,14 @@ export default async function StatusMessage(serverName, members, serverImage) {
   const [serverInfo, players] = await GetFivemInfo();
   const record = await getPlayerRecord(players.length);
 
+  const button = new Discord.MessageActionRow().addComponents(
+    new Discord.MessageButton()
+      .setLabel("Csatlakozás")
+      .setStyle("LINK")
+      .setDisabled(!serverInfo)
+      .setURL(`https://cfx.re/join/q4ald4`)
+  );
+
   const embed = new Discord.MessageEmbed()
     .setAuthor(
       embedConfig.author || serverName,
@@ -30,12 +38,16 @@ export default async function StatusMessage(serverName, members, serverImage) {
     .addField("Weboldal:", `:desktop: ${process.env.WEBSITE}`, true)
     .addField(
       "Elérhető Játékosok:",
-      `:video_game: ${players.length.toString()}`,
+      `:video_game: ${players.length.toString()}/${
+        serverInfo?.vars?.sv_maxClients || 64
+      }`,
       true
     )
-    .setColor(serverInfo ? "GREEN" : "RED");
+    .setColor(serverInfo ? "GREEN" : "RED")
+    .setFooter("Atom RolePlay", serverImage)
+    .setTimestamp();
 
-  return embed;
+  return { embeds: [embed], components: [button] };
 }
 
 async function getPlayerRecord(currentPlayers) {
